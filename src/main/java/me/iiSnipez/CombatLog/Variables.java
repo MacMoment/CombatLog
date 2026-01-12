@@ -54,44 +54,44 @@ public class Variables {
 		plugin.killEnabled = plugin.clConfig.getCLConfig().getBoolean("Kill");
 		// messages
 		plugin.updateCheckMessage = plugin.clConfig.getCLConfig().getString("UpdateCheckMessage");
-		plugin.updateCheckMessageEnabled = !plugin.updateCheckMessage.equalsIgnoreCase("false");
+		plugin.updateCheckMessageEnabled = plugin.updateCheckMessage != null && !plugin.updateCheckMessage.equalsIgnoreCase("false");
 		
 		plugin.MOTDMessage = plugin.clConfig.getCLConfig().getString("MOTDMessage");
-		plugin.MOTDMessageEnabled = !plugin.MOTDMessage.equalsIgnoreCase("false");
+		plugin.MOTDMessageEnabled = plugin.MOTDMessage != null && !plugin.MOTDMessage.equalsIgnoreCase("false");
 		
 		plugin.broadcastMessage = plugin.clConfig.getCLConfig().getString("BroadcastMessage");
-		plugin.broadcastMessageEnabled = !plugin.broadcastMessage.equalsIgnoreCase("false");
+		plugin.broadcastMessageEnabled = plugin.broadcastMessage != null && !plugin.broadcastMessage.equalsIgnoreCase("false");
 		
 		plugin.taggerMessage = plugin.clConfig.getCLConfig().getString("TaggerMessage");
-		plugin.taggerMessageEnabled = !plugin.taggerMessage.equalsIgnoreCase("false");
+		plugin.taggerMessageEnabled = plugin.taggerMessage != null && !plugin.taggerMessage.equalsIgnoreCase("false");
 		
 		plugin.taggedMessage = plugin.clConfig.getCLConfig().getString("TaggedMessage");
-		plugin.taggedMessageEnabled = !plugin.taggedMessage.equalsIgnoreCase("false");
+		plugin.taggedMessageEnabled = plugin.taggedMessage != null && !plugin.taggedMessage.equalsIgnoreCase("false");
 		
 		plugin.untagMessage = plugin.clConfig.getCLConfig().getString("UntagMessage");
-		plugin.untagMessageEnabled = !plugin.untagMessage.equalsIgnoreCase("false");
+		plugin.untagMessageEnabled = plugin.untagMessage != null && !plugin.untagMessage.equalsIgnoreCase("false");
 		
 		plugin.tagTimeMessage = plugin.clConfig.getCLConfig().getString("InCombatMessage");
-		plugin.tagTimeMessageEnabled = !plugin.tagTimeMessage.equalsIgnoreCase("false");
+		plugin.tagTimeMessageEnabled = plugin.tagTimeMessage != null && !plugin.tagTimeMessage.equalsIgnoreCase("false");
 		
 		plugin.notInCombatMessage = plugin.clConfig.getCLConfig().getString("NotInCombatMessage");
-		plugin.notInCombatMessageEnabled = !plugin.notInCombatMessage.equalsIgnoreCase("false");
+		plugin.notInCombatMessageEnabled = plugin.notInCombatMessage != null && !plugin.notInCombatMessage.equalsIgnoreCase("false");
 		
 		plugin.actionBarInCombatMessage = plugin.clConfig.getCLConfig().getString("ActionBarInCombatMessage");
 		plugin.actionBarUntagMessage = plugin.clConfig.getCLConfig().getString("ActionBarUntagMessage");
 		plugin.removeModesMessage = plugin.clConfig.getCLConfig().getString("RemoveModesMessage");
-		plugin.removeModesMessageEnabled = !plugin.removeModesMessage.equalsIgnoreCase("false");
+		plugin.removeModesMessageEnabled = plugin.removeModesMessage != null && !plugin.removeModesMessage.equalsIgnoreCase("false");
 		
 		plugin.removeInvisMessage = plugin.clConfig.getCLConfig().getString("RemoveInvisMessage");
-		plugin.removeInvisMessageEnabled = !plugin.removeInvisMessage.equalsIgnoreCase("false");
+		plugin.removeInvisMessageEnabled = plugin.removeInvisMessage != null && !plugin.removeInvisMessage.equalsIgnoreCase("false");
 		
 		plugin.blockCommandsMessage = plugin.clConfig.getCLConfig().getString("BlockCommandsMessage");
-		plugin.blockCommandsMessageEnabled = !plugin.blockCommandsMessage.equalsIgnoreCase("false");
+		plugin.blockCommandsMessageEnabled = plugin.blockCommandsMessage != null && !plugin.blockCommandsMessage.equalsIgnoreCase("false");
 		
 		plugin.blockTeleportationMessage = plugin.clConfig.getCLConfig().getString("BlockTeleportationMessage");
-		plugin.blockTeleportationMessageEnabled = !plugin.blockTeleportationMessage.equalsIgnoreCase("false");
+		plugin.blockTeleportationMessageEnabled = plugin.blockTeleportationMessage != null && !plugin.blockTeleportationMessage.equalsIgnoreCase("false");
 		
 		plugin.killMessage = plugin.clConfig.getCLConfig().getString("KillMessage");
-		plugin.killMessageEnabled = !plugin.killMessage.equalsIgnoreCase("false");
+		plugin.killMessageEnabled = plugin.killMessage != null && !plugin.killMessage.equalsIgnoreCase("false");
 	}
 }
