@@ -20,7 +20,6 @@
 
 package me.iiSnipez.CombatLog;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,13 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,6 +57,7 @@ import me.iiSnipez.CombatLog.Listeners.PlayerToggleFlightListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerUntagListener;
 import me.iiSnipez.CombatLog.Listeners.PlayeriDisguiseListener;
 import me.libraryaddict.disguise.DisguiseAPI;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class CombatLog extends JavaPlugin {
 
@@ -66,13 +66,13 @@ public class CombatLog extends JavaPlugin {
 	public CommandExec commandExec;
 	public Variables vars;
 	public ActionBar aBar;
-	public BStatsMetrics bsm;
 	public WorldGuardPlugin wg;
 	public de.robingrether.idisguise.api.DisguiseAPI dAPI;
 	public boolean usesLibsDisguise = false;
 	public boolean usesiDisguise = false;
 	public boolean usesFactions = false;
 	public boolean usesWorldGuard = false;
+	public boolean usesPlaceholderAPI = false;
 	public Updater updater;
 	public boolean updateCheckEnabled = false;
 	public boolean updateAvailable = false;
@@ -81,7 +81,6 @@ public class CombatLog extends JavaPlugin {
 	public int tagDuration = 10;
 	public boolean useActionBar = false;
 	public boolean useBossBar = false;
-	public boolean versionSupported = false;
 	public boolean removeFlyEnabled = false;
 	public boolean removeDisguiseEnabled = false;
 	public boolean removeTagOnKick = false;
@@ -90,12 +89,12 @@ public class CombatLog extends JavaPlugin {
 	public boolean removeTagInPvPDisabledArea = false;
 	public boolean removeInvisPotion = false;
 	public boolean blockCommandsEnabled = false;
-	public List<String> commandNames = new ArrayList<String>();
+	public List<String> commandNames = new ArrayList<>();
 	public boolean whitelistModeEnabled = false;
 	public boolean executeCommandsEnabled = false;
-	public List<String> executeCommandList = new ArrayList<String>();
+	public List<String> executeCommandList = new ArrayList<>();
 	public boolean blockTeleportationEnabled = false;
-	public List<String> disableWorldNames = new ArrayList<String>();
+	public List<String> disableWorldNames = new ArrayList<>();
 	public boolean killEnabled = false;
 	public String updateCheckMessage = "";
 	public boolean updateCheckMessageEnabled = false;
@@ -115,8 +114,6 @@ public class CombatLog extends JavaPlugin {
 	public boolean notInCombatMessageEnabled = false;
 	public String actionBarInCombatMessage = "";
 	public String actionBarUntagMessage = "";
-	public String scoreboardInCombatMessage = "";
-	public boolean scoreboardInCombatMessageEnabled = false;
 	public String removeModesMessage = "";
 	public boolean removeModesMessageEnabled = false;
 	public String removeInvisMessage = "";
@@ -127,15 +124,16 @@ public class CombatLog extends JavaPlugin {
 	public boolean blockTeleportationMessageEnabled = false;
 	public String killMessage = "";
 	public boolean killMessageEnabled = false;
-	public HashMap<String, Long> taggedPlayers = new HashMap<String, Long>();
-	public ArrayList<String> killPlayers = new ArrayList<String>();
+	public HashMap<String, Long> taggedPlayers = new HashMap<>();
+	public ArrayList<String> killPlayers = new ArrayList<>();
 	public boolean useNewFactions = false;
 	public boolean useLegacyFactions = false;
-	public String nmserver;
-	public boolean newActionBar = false;
 	
 	public int combatlogs;
 
+	private static final int BSTATS_PLUGIN_ID = 24870;
+
+	@Override
 	public void onEnable() {
 		checkForPlugins();
 		initiateVars();
@@ -149,12 +147,14 @@ public class CombatLog extends JavaPlugin {
 			startMetrics();
 			metricsTimer();
 		}
-		logInfo("[CombatLog] v" + getDescription().getVersion() + " has been enabled.");
+		registerPlaceholders();
+		getLogger().info("CombatLog v" + getPluginMeta().getVersion() + " has been enabled.");
 	}
 
+	@Override
 	public void onDisable() {
 		taggedPlayers.clear();
-		logInfo("[CombatLog] v" + getDescription().getVersion() + " has been disabled.");
+		getLogger().info("CombatLog v" + getPluginMeta().getVersion() + " has been disabled.");
 	}
 
 	public void updateCheck() {
@@ -167,73 +167,67 @@ public class CombatLog extends JavaPlugin {
 		if (getServer().getPluginManager().getPlugin("LibsDisguises") == null) {
 			usesLibsDisguise = false;
 		} else {
-			logInfo("[CombatLog] LibsDisguises plugin found! Disguise removal will work.");
+			getLogger().info("LibsDisguises plugin found! Disguise removal will work.");
 			usesLibsDisguise = true;
 		}
 		if (getServer().getPluginManager().getPlugin("iDisguise") == null) {
 			usesiDisguise = false;
 		} else {
 			usesiDisguise = true;
-			logInfo("[CombatLog] iDisguise plugin found! Disguise removal will work.");
+			getLogger().info("iDisguise plugin found! Disguise removal will work.");
 		}
 		if (getServer().getPluginManager().getPlugin("Factions") == null) {
 			usesFactions = false;
 		} else {
 			usesFactions = true;
-			String version = getServer().getPluginManager().getPlugin("Factions").getDescription().getVersion();
-			if (version.substring(0, 1).equalsIgnoreCase("2")) {
+			String version = getServer().getPluginManager().getPlugin("Factions").getPluginMeta().getVersion();
+			if (version.startsWith("2")) {
 				useNewFactions = true;
-				logInfo("[CombatLog] New Factions plugin v" + version + " found! Safezone regions are now detected.");
-			} else if (version.substring(0, 1).equalsIgnoreCase("1")) {
+				getLogger().info("New Factions plugin v" + version + " found! Safezone regions are now detected.");
+			} else if (version.startsWith("1")) {
 				useLegacyFactions = true;
-				logInfo("[CombatLog] Legacy Factions plugin v" + version
-						+ " found! Safezone regions are now detected.");
+				getLogger().info("Legacy Factions plugin v" + version + " found! Safezone regions are now detected.");
 			}
 		}
 		if (getServer().getPluginManager().getPlugin("WorldGuard") == null) {
 			usesWorldGuard = false;
 		} else {
 			usesWorldGuard = true;
-			logInfo("[CombatLog] WorldGuard plugin found! PvP regions are now detected.");
+			getLogger().info("WorldGuard plugin found! PvP regions are now detected.");
 			wg = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+		}
+		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
+			usesPlaceholderAPI = false;
+		} else {
+			usesPlaceholderAPI = true;
+			getLogger().info("PlaceholderAPI plugin found! Placeholders will be registered.");
+		}
+	}
+
+	private void registerPlaceholders() {
+		if (usesPlaceholderAPI) {
+			new CombatLogExpansion(this).register();
+			getLogger().info("PlaceholderAPI placeholders registered!");
 		}
 	}
 
 	public void startMetrics() {
-		try {
-			Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		bsm = new BStatsMetrics(this);
-
-		bsm.addCustomChart(new BStatsMetrics.SingleLineChart("combatlogs", new Callable<Integer>() {
-			@Override
-			public Integer call() throws Exception {
-				return combatlogs;
-			}
-		}));
+		Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
+		metrics.addCustomChart(new SingleLineChart("combatlogs", () -> combatlogs));
 	}
 
 	public void enableTimer() {
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			public void run() {
-				Iterator<Map.Entry<String, Long>> iter = taggedPlayers.entrySet().iterator();
-				while (iter.hasNext()) {
-					Map.Entry<String, Long> c = iter.next();
-					Player player = getServer().getPlayer(c.getKey());
-					if (useActionBar) {
-						if (newActionBar) {
-							aBar.sendActionBarNew(player, "" + "" + actionBarInCombatMessage.replaceAll("<time>",
-									"" + tagTimeRemaining(player.getName())));
-						} else {
-							aBar.sendActionBarOld(player, "" + "" + actionBarInCombatMessage.replaceAll("<time>",
-									"" + tagTimeRemaining(player.getName())));
-						}
-					}
-					if (getCurrentTime() - (long) c.getValue().longValue() >= tagDuration) {
-						iter.remove();
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+			Iterator<Map.Entry<String, Long>> iter = taggedPlayers.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry<String, Long> c = iter.next();
+				Player player = getServer().getPlayer(c.getKey());
+				if (player != null && useActionBar) {
+					aBar.sendActionBar(player, actionBarInCombatMessage.replace("<time>", tagTimeRemaining(player.getName())));
+				}
+				if (getCurrentTime() - c.getValue() >= tagDuration) {
+					iter.remove();
+					if (player != null) {
 						PlayerUntagEvent event = new PlayerUntagEvent(player, UntagCause.TIME_EXPIRE);
 						getServer().getPluginManager().callEvent(event);
 					}
@@ -249,31 +243,42 @@ public class CombatLog extends JavaPlugin {
 			public void run() {
 				combatlogs = 0;
 			}
-		}, 1005 * 60 * 5, 1000 * 60 * 30);
+		}, 1000L * 60 * 5, 1000L * 60 * 30);
 	}
 
 	public void LogHandler() {
 		log.addHandler(new Handler() {
+			@Override
 			public void publish(LogRecord logRecord) {
 				String s = logRecord.getMessage();
-				if (s.contains(" lost connection: ")) {
+				if (s != null && s.contains(" lost connection: ")) {
 					String[] a = s.split(" ");
-					String DisconnectMsg = a[3];
-					PlayerQuitListener.setDisconnectMsg(DisconnectMsg);
+					if (a.length > 3) {
+						String disconnectMsg = a[3];
+						PlayerQuitListener.setDisconnectMsg(disconnectMsg);
+					}
 				}
 			}
 
+			@Override
 			public void flush() {
 			}
 
+			@Override
 			public void close() throws SecurityException {
 			}
 		});
 	}
 
 	public void initiateCmds() {
-		getCommand("combatlog").setExecutor(commandExec);
-		getCommand("tag").setExecutor(commandExec);
+		var combatlogCmd = getCommand("combatlog");
+		var tagCmd = getCommand("tag");
+		if (combatlogCmd != null) {
+			combatlogCmd.setExecutor(commandExec);
+		}
+		if (tagCmd != null) {
+			tagCmd.setExecutor(commandExec);
+		}
 	}
 
 	public void initiateListeners() {
@@ -310,8 +315,7 @@ public class CombatLog extends JavaPlugin {
 		updater = new Updater(this);
 		commandExec = new CommandExec(this);
 		vars = new Variables(this);
-		aBar = new ActionBar(this);
-		aBar.getBukkitVersion();
+		aBar = new ActionBar();
 		if (usesiDisguise) {
 			dAPI = vars.initDis();
 		}
@@ -321,13 +325,14 @@ public class CombatLog extends JavaPlugin {
 		if (usesLibsDisguise && removeDisguiseEnabled && DisguiseAPI.isDisguised(player)) {
 			DisguiseAPI.undisguiseToAll(player);
 			if (removeModesMessageEnabled) {
-				player.sendMessage(translateText(removeModesMessage.replaceAll("<mode>", "disguise")));
+				player.sendMessage(translateText(removeModesMessage.replace("<mode>", "disguise")));
 			}
 		}
 		if (usesiDisguise && removeDisguiseEnabled && dAPI.isDisguised((OfflinePlayer) player)) {
 			dAPI.undisguise((OfflinePlayer) player);
-			if (removeModesMessageEnabled)
-				player.sendMessage(translateText(removeModesMessage.replaceAll("<mode>", "disguise")));
+			if (removeModesMessageEnabled) {
+				player.sendMessage(translateText(removeModesMessage.replace("<mode>", "disguise")));
+			}
 		}
 	}
 
@@ -335,17 +340,25 @@ public class CombatLog extends JavaPlugin {
 		if (player.isFlying() && removeFlyEnabled) {
 			player.setFlying(false);
 			if (removeModesMessageEnabled) {
-				player.sendMessage(translateText(removeModesMessage.replaceAll("<mode>", "flight")));
+				player.sendMessage(translateText(removeModesMessage.replace("<mode>", "flight")));
 			}
 		}
 	}
 
 	public String tagTimeRemaining(String id) {
-		return "" + (tagDuration - (getCurrentTime() - (Long) taggedPlayers.get(id).longValue()));
+		Long tagTime = taggedPlayers.get(id);
+		if (tagTime == null) {
+			return "0";
+		}
+		return String.valueOf(tagDuration - (getCurrentTime() - tagTime));
 	}
 
 	public long tagTime(String id) {
-		return tagDuration - (getCurrentTime() - (Long) taggedPlayers.get(id).longValue());
+		Long tagTime = taggedPlayers.get(id);
+		if (tagTime == null) {
+			return 0;
+		}
+		return tagDuration - (getCurrentTime() - tagTime);
 	}
 
 	public long getCurrentTime() {
@@ -353,14 +366,12 @@ public class CombatLog extends JavaPlugin {
 	}
 
 	public void broadcastMsg(String string) {
-		getServer().broadcastMessage(translateText(string));
-	}
-
-	public void logInfo(String string) {
-		log.info(translateText(string));
+		getServer().broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize(string));
 	}
 
 	public String translateText(String string) {
-		return ChatColor.translateAlternateColorCodes('&', "" + string);
+		return LegacyComponentSerializer.legacyAmpersand().serialize(
+			LegacyComponentSerializer.legacyAmpersand().deserialize(string)
+		);
 	}
 }

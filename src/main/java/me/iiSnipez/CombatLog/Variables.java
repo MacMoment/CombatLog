@@ -33,7 +33,7 @@ public class Variables {
 	}
 	
 	public void getValues() {
-		plugin.logInfo("[CombatLog] Loading config.yml");
+		plugin.getLogger().info("Loading config.yml");
 		// configuration
 		plugin.updateCheckEnabled = plugin.clConfig.getCLConfig().getBoolean("UpdateCheck");
 		plugin.MOTDEnabled = plugin.clConfig.getCLConfig().getBoolean("MOTD");
@@ -51,9 +51,6 @@ public class Variables {
 		plugin.removeTagInPvPDisabledArea = plugin.clConfig.getCLConfig().getBoolean("Remove-Tag.inPvPDisabledArea");
 		plugin.removeInvisPotion = plugin.clConfig.getCLConfig().getBoolean("Remove-Invis-Potion");
 		plugin.useActionBar = plugin.clConfig.getCLConfig().getBoolean("ActionBar");
-		if(Bukkit.getServer().getVersion().contains("1.7")) {
-			plugin.useActionBar = false;
-		}
 		plugin.useBossBar = plugin.clConfig.getCLConfig().getBoolean("BossBar");
 		plugin.blockCommandsEnabled = plugin.clConfig.getCLConfig().getBoolean("Block-Commands");
 		plugin.whitelistModeEnabled = plugin.clConfig.getCLConfig().getBoolean("Whitelist-Mode");
@@ -65,90 +62,45 @@ public class Variables {
 		plugin.killEnabled = plugin.clConfig.getCLConfig().getBoolean("Kill");
 		// messages
 		plugin.updateCheckMessage = plugin.clConfig.getCLConfig().getString("UpdateCheckMessage");
-		if (!plugin.updateCheckMessage.equalsIgnoreCase("false")) {
-			plugin.updateCheckMessageEnabled = true;
-		} else {
-			plugin.updateCheckMessageEnabled = false;
-		}
+		plugin.updateCheckMessageEnabled = !plugin.updateCheckMessage.equalsIgnoreCase("false");
+		
 		plugin.MOTDMessage = plugin.clConfig.getCLConfig().getString("MOTDMessage");
-		if (!plugin.MOTDMessage.equalsIgnoreCase("false")) {
-			plugin.MOTDMessageEnabled = true;
-		} else {
-			plugin.MOTDMessageEnabled = false;
-		}
+		plugin.MOTDMessageEnabled = !plugin.MOTDMessage.equalsIgnoreCase("false");
+		
 		plugin.broadcastMessage = plugin.clConfig.getCLConfig().getString("BroadcastMessage");
-		if (!plugin.broadcastMessage.equalsIgnoreCase("false")) {
-			plugin.broadcastMessageEnabled = true;
-		} else {
-			plugin.broadcastMessageEnabled = false;
-		}
+		plugin.broadcastMessageEnabled = !plugin.broadcastMessage.equalsIgnoreCase("false");
+		
 		plugin.taggerMessage = plugin.clConfig.getCLConfig().getString("TaggerMessage");
-		if (!plugin.taggerMessage.equalsIgnoreCase("false")) {
-			plugin.taggerMessageEnabled = true;
-		} else {
-			plugin.taggerMessageEnabled = false;
-		}
+		plugin.taggerMessageEnabled = !plugin.taggerMessage.equalsIgnoreCase("false");
+		
 		plugin.taggedMessage = plugin.clConfig.getCLConfig().getString("TaggedMessage");
-		if (!plugin.taggedMessage.equalsIgnoreCase("false")) {
-			plugin.taggedMessageEnabled = true;
-		} else {
-			plugin.taggedMessageEnabled = false;
-		}
+		plugin.taggedMessageEnabled = !plugin.taggedMessage.equalsIgnoreCase("false");
+		
 		plugin.untagMessage = plugin.clConfig.getCLConfig().getString("UntagMessage");
-		if (!plugin.untagMessage.equalsIgnoreCase("false")) {
-			plugin.untagMessageEnabled = true;
-		} else {
-			plugin.untagMessageEnabled = false;
-		}
+		plugin.untagMessageEnabled = !plugin.untagMessage.equalsIgnoreCase("false");
+		
 		plugin.tagTimeMessage = plugin.clConfig.getCLConfig().getString("InCombatMessage");
-		if (!plugin.tagTimeMessage.equalsIgnoreCase("false")) {
-			plugin.tagTimeMessageEnabled = true;
-		} else {
-			plugin.tagTimeMessageEnabled = false;
-		}
+		plugin.tagTimeMessageEnabled = !plugin.tagTimeMessage.equalsIgnoreCase("false");
+		
 		plugin.notInCombatMessage = plugin.clConfig.getCLConfig().getString("NotInCombatMessage");
-		if (!plugin.notInCombatMessage.equalsIgnoreCase("false")) {
-			plugin.notInCombatMessageEnabled = true;
-		} else {
-			plugin.notInCombatMessageEnabled = false;
-		}
+		plugin.notInCombatMessageEnabled = !plugin.notInCombatMessage.equalsIgnoreCase("false");
+		
 		plugin.actionBarInCombatMessage = plugin.clConfig.getCLConfig().getString("ActionBarInCombatMessage");
 		plugin.actionBarUntagMessage = plugin.clConfig.getCLConfig().getString("ActionBarUntagMessage");
 		plugin.removeModesMessage = plugin.clConfig.getCLConfig().getString("RemoveModesMessage");
-		if (!plugin.removeModesMessage.equalsIgnoreCase("false")) {
-			plugin.removeModesMessageEnabled = true;
-		} else {
-			plugin.removeModesMessageEnabled = false;
-		}
+		plugin.removeModesMessageEnabled = !plugin.removeModesMessage.equalsIgnoreCase("false");
+		
 		plugin.removeInvisMessage = plugin.clConfig.getCLConfig().getString("RemoveInvisMessage");
-		if (!plugin.removeInvisMessage.equalsIgnoreCase("false")) {
-			plugin.removeInvisMessageEnabled = true;
-		} else {
-			plugin.removeInvisMessageEnabled = false;
-		}
+		plugin.removeInvisMessageEnabled = !plugin.removeInvisMessage.equalsIgnoreCase("false");
+		
 		plugin.blockCommandsMessage = plugin.clConfig.getCLConfig().getString("BlockCommandsMessage");
-		if (!plugin.blockCommandsMessage.equalsIgnoreCase("false")) {
-			plugin.blockCommandsMessageEnabled = true;
-		} else {
-			plugin.blockCommandsMessageEnabled = false;
-		}
+		plugin.blockCommandsMessageEnabled = !plugin.blockCommandsMessage.equalsIgnoreCase("false");
+		
 		plugin.blockTeleportationMessage = plugin.clConfig.getCLConfig().getString("BlockTeleportationMessage");
-		if (!plugin.blockTeleportationMessage.equalsIgnoreCase("false")) {
-			plugin.blockTeleportationMessageEnabled = true;
-		} else {
-			plugin.blockTeleportationMessageEnabled = false;
-		}
+		plugin.blockTeleportationMessageEnabled = !plugin.blockTeleportationMessage.equalsIgnoreCase("false");
+		
 		plugin.killMessage = plugin.clConfig.getCLConfig().getString("KillMessage");
-		if (!plugin.killMessage.equalsIgnoreCase("false")) {
-			plugin.killMessageEnabled = true;
-		} else {
-			plugin.killMessageEnabled = false;
-		}
-		if (Bukkit.getVersion().contains("1.12")) {
-			plugin.newActionBar = true;
-		} else {
-			plugin.newActionBar = false;
-		}
+		plugin.killMessageEnabled = !plugin.killMessage.equalsIgnoreCase("false");
 	}
 	
 	public DisguiseAPI initDis() {

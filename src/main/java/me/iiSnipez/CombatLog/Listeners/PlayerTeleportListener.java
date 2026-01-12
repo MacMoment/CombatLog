@@ -20,7 +20,6 @@
 
 package me.iiSnipez.CombatLog.Listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,34 +42,20 @@ public class PlayerTeleportListener implements Listener {
 		Player player = event.getPlayer();
 		if (plugin.taggedPlayers.containsKey(player.getName())) {
 			if (plugin.blockTeleportationEnabled) {
-				if (Bukkit.getVersion().contains("1.12") || Bukkit.getVersion().contains("1.11") || Bukkit.getVersion().contains("1.10")
-						|| Bukkit.getVersion().contains("1.9")) {
-					if (event.getCause().equals(TeleportCause.COMMAND)
-							|| event.getCause().equals(TeleportCause.END_GATEWAY)
-							|| event.getCause().equals(TeleportCause.END_PORTAL)
-							|| event.getCause().equals(TeleportCause.ENDER_PEARL)
-							|| event.getCause().equals(TeleportCause.NETHER_PORTAL)
-							|| event.getCause().equals(TeleportCause.PLUGIN)
-							|| event.getCause().equals(TeleportCause.SPECTATE)
-							|| event.getCause().equals(TeleportCause.UNKNOWN)
-							|| event.getCause().equals(TeleportCause.CHORUS_FRUIT)) {
-						event.setCancelled(true);
-						if (plugin.blockTeleportationMessageEnabled) {
-							player.sendMessage(plugin.translateText(plugin.blockTeleportationMessage));
-						}
-					}
-				} else {
-					if (event.getCause().equals(TeleportCause.COMMAND)
-							|| event.getCause().equals(TeleportCause.END_PORTAL)
-							|| event.getCause().equals(TeleportCause.ENDER_PEARL)
-							|| event.getCause().equals(TeleportCause.NETHER_PORTAL)
-							|| event.getCause().equals(TeleportCause.PLUGIN)
-							|| event.getCause().equals(TeleportCause.SPECTATE)
-							|| event.getCause().equals(TeleportCause.UNKNOWN)) {
-						event.setCancelled(true);
-						if (plugin.blockTeleportationMessageEnabled) {
-							player.sendMessage(plugin.translateText(plugin.blockTeleportationMessage));
-						}
+				TeleportCause cause = event.getCause();
+				// Block all teleportation methods that could be used to escape combat
+				if (cause == TeleportCause.COMMAND
+						|| cause == TeleportCause.END_GATEWAY
+						|| cause == TeleportCause.END_PORTAL
+						|| cause == TeleportCause.ENDER_PEARL
+						|| cause == TeleportCause.NETHER_PORTAL
+						|| cause == TeleportCause.PLUGIN
+						|| cause == TeleportCause.SPECTATE
+						|| cause == TeleportCause.UNKNOWN
+						|| cause == TeleportCause.CHORUS_FRUIT) {
+					event.setCancelled(true);
+					if (plugin.blockTeleportationMessageEnabled) {
+						player.sendMessage(plugin.translateText(plugin.blockTeleportationMessage));
 					}
 				}
 			}
