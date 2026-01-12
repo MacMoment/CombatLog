@@ -31,7 +31,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
     
     // LibsDisguises - optional disguise support
-    compileOnly("LibsDisguises:LibsDisguises:10.0.44")
+    compileOnly("me.libraryaddict.disguise:LibsDisguises:10.0.44")
     
     // iDisguise - optional disguise support  
     compileOnly("de.robingrether.idisguise:idisguise-core:5.8.1")
