@@ -27,19 +27,16 @@ ActionBar: true
 BossBar: true
 
 # Add modes you want removed during Combat under Remove-Modes.
-# Available Modes: fly, disguise.
+# Available Modes: fly.
 Remove-Modes:
   - fly
-  - disguise
 
 # onKick: if true, remove Tags when players are kicked.
 # onLagout: if true, remove Tags when players lag out.
-# inSafeZone if true, remove Tags when players enter SafeZone (Factions support)
 # inPvPDisabledArea: if true, remove Tags when players enter areas with PvP disabled (WorldGuard support) 
 Remove-Tag:
   onKick: false
   onLagout: false
-  inSafeZone: true
   inPvPDisabledArea: true
 
 # Block commands from being used, or allow only certain commands to be used (aka whitelist mode)
@@ -54,7 +51,6 @@ Commands:
   - tpahere
   - warp
   - fly
-  - disguise
 
 # Kill players when they CombatLog.
 Kill: true

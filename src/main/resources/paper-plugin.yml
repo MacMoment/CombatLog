@@ -16,18 +16,6 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
-    Factions:
-      load: BEFORE
-      required: false
-      join-classpath: true
-    LibsDisguises:
-      load: BEFORE
-      required: false
-      join-classpath: true
-    iDisguise:
-      load: BEFORE
-      required: false
-      join-classpath: true
     WorldGuard:
       load: BEFORE
       required: false
