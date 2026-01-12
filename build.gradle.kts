@@ -19,8 +19,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.extendedclip.com/releases/") // PlaceholderAPI
     maven("https://maven.enginehub.org/repo/") // WorldGuard
-    maven("https://mvn.lib.co.nz/public") // LibsDisguises
-    maven("https://nexus.hc.to/content/repositories/pub_releases/") // Factions/MassiveCraft
+    maven("https://jitpack.io") // LibsDisguises, Factions, MassiveCore
 }
 
 dependencies {
@@ -30,15 +29,15 @@ dependencies {
     // Optional soft dependencies (provided at runtime)
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
     
-    // LibsDisguises - optional disguise support
-    compileOnly("me.libraryaddict.disguise:LibsDisguises:10.0.44")
+    // LibsDisguises - optional disguise support (via JitPack)
+    compileOnly("com.github.libraryaddict:LibsDisguises:10.0.44")
     
-    // iDisguise - optional disguise support  
-    compileOnly("de.robingrether.idisguise:idisguise-core:5.8.1")
+    // iDisguise - optional disguise support (via JitPack)
+    compileOnly("com.github.robingrether:iDisguise:5.8.1")
     
-    // Factions - optional faction support (both new and legacy)
-    compileOnly("com.massivecraft:factions:2.14.0")
-    compileOnly("com.massivecraft:massivecore:2.14.0")
+    // Factions - optional faction support (both new and legacy) via JitPack
+    compileOnly("com.github.MassiveCraft:Factions:2.14.0")
+    compileOnly("com.github.MassiveCraft:MassiveCore:2.14.0")
     
     // bStats for metrics
     implementation("org.bstats:bstats-bukkit:3.1.0")
