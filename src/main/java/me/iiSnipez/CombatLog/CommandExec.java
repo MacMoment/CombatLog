@@ -25,8 +25,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-
-import net.md_5.bungee.api.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandExec implements CommandExecutor {
 
@@ -37,10 +36,10 @@ public class CommandExec implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (cmd.getLabel().equalsIgnoreCase("combatlog") || cmd.getLabel().equalsIgnoreCase("cl")) {
-			if (sender instanceof Player) {
-				Player player = (Player) sender;
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+		String cmdLabel = cmd.getLabel().toLowerCase();
+		if (cmdLabel.equals("combatlog") || cmdLabel.equals("cl")) {
+			if (sender instanceof Player player) {
 				if (args.length == 0) {
 					player.sendMessage(plugin.translateText("&8[&4CombatLog&8]&7 Originally developed by &cJackProehl&7."));
 					player.sendMessage(plugin.translateText("&8[&4CombatLog&8]&7 Update developed and maintained by &ciiSnipez&7."));
@@ -60,14 +59,14 @@ public class CommandExec implements CommandExecutor {
 							player.sendMessage(plugin.translateText("&4You do not have permission to use this command."));
 						}
 					} else if (args[0].equalsIgnoreCase("update") && player.hasPermission("combatlog.update")) {
-						if(plugin.updateAvailable)
+						if (plugin.updateAvailable) {
 							player.sendMessage(plugin.translateText("&8[&4CombatLog&8] &aUpdate available! http://bit.ly/CL-DL "));
-						else
+						} else {
 							player.sendMessage(plugin.translateText("&8[&4CombatLog&8] &7No update was detected."));
+						}
 					}
 				}
-			} else if (sender instanceof ConsoleCommandSender) {
-				ConsoleCommandSender console = (ConsoleCommandSender) sender;
+			} else if (sender instanceof ConsoleCommandSender console) {
 				if (args.length == 0) {
 					console.sendMessage("[CombatLog] Use '/cl help' to view all of the commands.");
 				} else if (args.length == 1) {
@@ -77,31 +76,31 @@ public class CommandExec implements CommandExecutor {
 						plugin.loadSettings();
 						console.sendMessage("[CombatLog] Configuration reloaded.");
 					} else if (args[0].equalsIgnoreCase("update")) {
-						if(plugin.updateAvailable)
-							console.sendMessage(ChatColor.GREEN + "[CombatLog] Update available! http://bit.ly/CL-DL ");
-						else
-							console.sendMessage(ChatColor.RED + "[CombatLog] No update was detected.");
+						if (plugin.updateAvailable) {
+							console.sendMessage("[CombatLog] Update available! http://bit.ly/CL-DL ");
+						} else {
+							console.sendMessage("[CombatLog] No update was detected.");
+						}
 					}
 				}
 			}
-		} else if (cmd.getLabel().equalsIgnoreCase("tag") || cmd.getLabel().equalsIgnoreCase("ct")) {
-			if (sender instanceof Player) {
-				Player player = (Player) sender;
+		} else if (cmdLabel.equals("tag") || cmdLabel.equals("ct")) {
+			if (sender instanceof Player player) {
 				String id = player.getName();
-				if (plugin.taggedPlayers.containsKey(id) && plugin.tagDuration 
-						- (plugin.getCurrentTime() - (Long) plugin.taggedPlayers.get(id).longValue()) >= 1L) {
-					player.sendMessage(plugin.translateText(plugin.tagTimeMessage.replaceAll("<time>", "" + plugin.tagTimeRemaining(id))));
-				} else if (plugin.taggedPlayers.containsKey(id) && plugin.tagDuration
-						- (plugin.getCurrentTime() - (Long) plugin.taggedPlayers.get(id).longValue()) < 1L) {
-					player.sendMessage(plugin.translateText(plugin.tagTimeMessage.replaceAll("<time>", "" + plugin.tagTimeRemaining(id))));
-				}else if (!plugin.taggedPlayers.containsKey(id)) {
+				if (plugin.taggedPlayers.containsKey(id)) {
+					long remaining = plugin.tagDuration - (plugin.getCurrentTime() - plugin.taggedPlayers.get(id));
+					if (remaining >= 1L) {
+						player.sendMessage(plugin.translateText(plugin.tagTimeMessage.replace("<time>", plugin.tagTimeRemaining(id))));
+					} else {
+						player.sendMessage(plugin.translateText(plugin.tagTimeMessage.replace("<time>", plugin.tagTimeRemaining(id))));
+					}
+				} else {
 					player.sendMessage(plugin.translateText(plugin.notInCombatMessage));
 				}
-			}else if(sender instanceof ConsoleCommandSender){
-				ConsoleCommandSender console = (ConsoleCommandSender) sender;
+			} else if (sender instanceof ConsoleCommandSender console) {
 				console.sendMessage("[CombatLog] The console cannot use this command.");
 			}
 		}
-		return false;
+		return true;
 	}
 }

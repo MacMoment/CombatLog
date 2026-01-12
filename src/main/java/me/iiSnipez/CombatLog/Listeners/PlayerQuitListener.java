@@ -43,7 +43,7 @@ public class PlayerQuitListener implements Listener {
 	public static String disconnectMsg = "";
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerOuit(PlayerQuitEvent event) {
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		if (player.hasPermission("combatlog.bypass")) {
 			return;

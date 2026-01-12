@@ -55,8 +55,7 @@ public class PlayerTagListener implements Listener {
 	}
 
 	private void tagDamager(Entity damager, Entity damagee) {
-		if (damager instanceof Player) {
-			Player p = (Player) damager;
+		if (damager instanceof Player p) {
 			if (!p.hasPermission("combatlog.bypass")) {
 				if (!plugin.disableWorldNames.contains(p.getWorld().getName())) {
 					Location l = p.getLocation();
@@ -76,21 +75,18 @@ public class PlayerTagListener implements Listener {
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
 						if (plugin.taggerMessageEnabled) {
 							p.sendMessage(plugin.translateText(
-									plugin.taggerMessage.replaceAll("<name>", ((Player) damagee).getName())));
+									plugin.taggerMessage.replace("<name>", ((Player) damagee).getName())));
 						}
 						if (plugin.useActionBar) {
-							if (plugin.newActionBar) {
-								plugin.aBar.sendActionBarNew(p, "" + plugin.actionBarInCombatMessage
-										.replaceAll("<time>", "" + plugin.tagTimeRemaining(p.getName())));
-							} else {
-								plugin.aBar.sendActionBarOld(p, "" + plugin.actionBarInCombatMessage
-										.replaceAll("<time>", "" + plugin.tagTimeRemaining(p.getName())));
-							}
+							plugin.aBar.sendActionBar(p, plugin.actionBarInCombatMessage
+									.replace("<time>", plugin.tagTimeRemaining(p.getName())));
 						}
-						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled)
+						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled) {
 							plugin.removeDisguise(p);
-						if (plugin.removeFlyEnabled)
+						}
+						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
+						}
 						if (plugin.removeInvisPotion) {
 							removePotion(p);
 							removePotion((Player) damagee);
@@ -98,10 +94,12 @@ public class PlayerTagListener implements Listener {
 					} else {
 						plugin.taggedPlayers.remove(p.getName());
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
-						if (plugin.removeDisguiseEnabled)
+						if (plugin.removeDisguiseEnabled) {
 							plugin.removeDisguise(p);
-						if (plugin.removeFlyEnabled)
+						}
+						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
+						}
 						if (plugin.removeInvisPotion) {
 							removePotion(p);
 							removePotion((Player) damagee);
@@ -113,8 +111,7 @@ public class PlayerTagListener implements Listener {
 	}
 
 	private void tagDamagee(Entity damager, Entity damagee) {
-		if (damagee instanceof Player) {
-			Player p = (Player) damagee;
+		if (damagee instanceof Player p) {
 			Location l = p.getLocation();
 			if (!p.hasPermission("combatlog.bypass")) {
 				if (!plugin.disableWorldNames.contains(p.getWorld().getName())) {
@@ -134,21 +131,18 @@ public class PlayerTagListener implements Listener {
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
 						if (plugin.taggedMessageEnabled) {
 							p.sendMessage(plugin.translateText(
-									plugin.taggedMessage.replaceAll("<name>", ((Player) damager).getName())));
+									plugin.taggedMessage.replace("<name>", ((Player) damager).getName())));
 						}
 						if (plugin.useActionBar) {
-							if (plugin.newActionBar) {
-								plugin.aBar.sendActionBarNew(p, "" + plugin.actionBarInCombatMessage
-										.replaceAll("<time>", "" + plugin.tagTimeRemaining(p.getName())));
-							} else {
-								plugin.aBar.sendActionBarOld(p, "" + plugin.actionBarInCombatMessage
-										.replaceAll("<time>", "" + plugin.tagTimeRemaining(p.getName())));
-							}
+							plugin.aBar.sendActionBar(p, plugin.actionBarInCombatMessage
+									.replace("<time>", plugin.tagTimeRemaining(p.getName())));
 						}
-						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled)
+						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled) {
 							plugin.removeDisguise(p);
-						if (plugin.removeFlyEnabled)
+						}
+						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
+						}
 						if (plugin.removeInvisPotion) {
 							removePotion(p);
 							removePotion((Player) damager);
@@ -156,10 +150,12 @@ public class PlayerTagListener implements Listener {
 					} else {
 						plugin.taggedPlayers.remove(p.getName());
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
-						if (plugin.removeDisguiseEnabled)
+						if (plugin.removeDisguiseEnabled) {
 							plugin.removeDisguise(p);
-						if (plugin.removeFlyEnabled)
+						}
+						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
+						}
 						if (plugin.removeInvisPotion) {
 							removePotion(p);
 							removePotion((Player) damager);
@@ -174,8 +170,9 @@ public class PlayerTagListener implements Listener {
 		for (PotionEffect potion : player.getActivePotionEffects()) {
 			if (potion.getType().equals(PotionEffectType.INVISIBILITY)) {
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
-				if (plugin.removeInvisMessageEnabled)
+				if (plugin.removeInvisMessageEnabled) {
 					player.sendMessage(plugin.translateText(plugin.removeInvisMessage));
+				}
 			}
 		}
 	}

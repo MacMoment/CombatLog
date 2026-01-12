@@ -43,11 +43,7 @@ public class PlayerUntagListener implements Listener {
 		String name = event.getPlayer().getName();
 		if (event.getCause().equals(UntagCause.TIME_EXPIRE)) {
 			if (plugin.useActionBar) {
-				if (plugin.newActionBar) {
-					plugin.aBar.sendActionBarNew(player, "" + plugin.actionBarUntagMessage);
-				} else {
-					plugin.aBar.sendActionBarOld(player, "" + plugin.actionBarUntagMessage);
-				}
+				plugin.aBar.sendActionBar(player, plugin.actionBarUntagMessage);
 			}
 			if (plugin.untagMessageEnabled) {
 				player.sendMessage(plugin.translateText(plugin.untagMessage));
@@ -69,11 +65,7 @@ public class PlayerUntagListener implements Listener {
 				player.sendMessage(plugin.translateText(plugin.untagMessage));
 			}
 			if (plugin.useActionBar) {
-				if (plugin.newActionBar) {
-					plugin.aBar.sendActionBarNew(player, "" + plugin.actionBarUntagMessage);
-				} else {
-					plugin.aBar.sendActionBarOld(player, "" + plugin.actionBarUntagMessage);
-				}
+				plugin.aBar.sendActionBar(player, plugin.actionBarUntagMessage);
 			}
 			plugin.taggedPlayers.remove(name);
 		}

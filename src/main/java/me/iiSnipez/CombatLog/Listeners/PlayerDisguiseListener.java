@@ -29,23 +29,23 @@ import me.iiSnipez.CombatLog.CombatLog;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.events.DisguiseEvent;
 
-public class PlayerDisguiseListener implements Listener{
+public class PlayerDisguiseListener implements Listener {
 	
 	CombatLog plugin;
 	
-	public PlayerDisguiseListener(CombatLog plugin){
+	public PlayerDisguiseListener(CombatLog plugin) {
 		this.plugin = plugin;
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerDisguise(DisguiseEvent event){
-		if(event.getEntity() instanceof Player){
-			Player player = (Player) event.getEntity();
-			if(plugin.usesiDisguise && plugin.removeDisguiseEnabled && plugin.taggedPlayers.containsKey(player.getName())){
+	public void onPlayerDisguise(DisguiseEvent event) {
+		if (event.getEntity() instanceof Player player) {
+			if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled && plugin.taggedPlayers.containsKey(player.getName())) {
 				DisguiseAPI.undisguiseToAll(player);
 				event.setCancelled(true);
-				if(plugin.removeModesMessageEnabled)
-					player.sendMessage(plugin.translateText(plugin.removeModesMessage.replaceAll("<mode>", "disguise")));
+				if (plugin.removeModesMessageEnabled) {
+					player.sendMessage(plugin.translateText(plugin.removeModesMessage.replace("<mode>", "disguise")));
+				}
 			}
 		}
 	}

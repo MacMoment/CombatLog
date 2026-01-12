@@ -21,6 +21,7 @@
 package me.iiSnipez.CombatLog.Listeners;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
@@ -34,13 +35,14 @@ public class PlayerToggleFlightListener implements Listener {
 		this.plugin = plugin;
 	}
 	
-	public void onFlightToggle(PlayerToggleFlightEvent event){
+	@EventHandler
+	public void onFlightToggle(PlayerToggleFlightEvent event) {
 		Player player = event.getPlayer();
-		if(plugin.removeFlyEnabled && !player.hasPermission("combatlog.bypass") && plugin.taggedPlayers.containsKey(player.getName())){
+		if (plugin.removeFlyEnabled && !player.hasPermission("combatlog.bypass") && plugin.taggedPlayers.containsKey(player.getName())) {
 			player.setFlying(false);
 			player.setAllowFlight(false);
 			event.setCancelled(true);
-			if(plugin.removeModesMessageEnabled){
+			if (plugin.removeModesMessageEnabled) {
 				player.sendMessage(plugin.translateText(plugin.removeModesMessage));
 			}
 		}

@@ -34,10 +34,12 @@ import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.massivecore.ps.PS;
-import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 import me.iiSnipez.CombatLog.CombatLog;
 import me.iiSnipez.CombatLog.Events.PlayerUntagEvent;
@@ -71,11 +73,16 @@ public class PlayerMoveListener implements Listener {
 					Bukkit.getServer().getPluginManager().callEvent(event1);
 				}
 			}
-			if(plugin.usesWorldGuard && plugin.removeTagInPvPDisabledArea) {
-				ApplicableRegionSet ars = WGBukkit.getPlugin().getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
-				if(ars.queryState(null, DefaultFlag.PVP) == StateFlag.State.DENY) {
-					PlayerUntagEvent event1 = new PlayerUntagEvent(player, UntagCause.SAFE_AREA);
-					Bukkit.getServer().getPluginManager().callEvent(event1);
+			if (plugin.usesWorldGuard && plugin.removeTagInPvPDisabledArea) {
+				try {
+					RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+					ApplicableRegionSet regions = query.getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
+					if (regions.queryState(null, Flags.PVP) == StateFlag.State.DENY) {
+						PlayerUntagEvent event1 = new PlayerUntagEvent(player, UntagCause.SAFE_AREA);
+						Bukkit.getServer().getPluginManager().callEvent(event1);
+					}
+				} catch (Exception e) {
+					// WorldGuard API might not be available or region not found
 				}
 			}
 			if (plugin.removeFlyEnabled) {

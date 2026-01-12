@@ -20,7 +20,6 @@
 
 package me.iiSnipez.CombatLog.Listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
@@ -29,7 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -65,14 +63,7 @@ public class EntityDamageByEntityListener implements Listener {
 						|| ((Player) ((Projectile) damager).getShooter()).hasPermission("combatlog.bypass")) {
 					return;
 				}
-				if (Bukkit.getVersion().contains("1.12") || Bukkit.getVersion().contains("1.11")
-						|| Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.9")) {
-					if (damager instanceof TippedArrow) {
-						PlayerTagEvent event1 = new PlayerTagEvent((Player) ((Projectile) damager).getShooter(),
-								(Player) damagee, plugin.tagDuration);
-						plugin.getServer().getPluginManager().callEvent(event1);
-					}
-				}
+				// All arrow types including tipped arrows are handled uniformly in 1.21+
 				if (damager instanceof Arrow) {
 					PlayerTagEvent event1 = new PlayerTagEvent((Player) ((Projectile) damager).getShooter(),
 							(Player) damagee, plugin.tagDuration);
