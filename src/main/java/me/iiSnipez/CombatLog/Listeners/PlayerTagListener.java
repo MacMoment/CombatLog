@@ -20,7 +20,6 @@
 
 package me.iiSnipez.CombatLog.Listeners;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,19 +27,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.entity.BoardColl;
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.massivecore.ps.PS;
-
 import me.iiSnipez.CombatLog.CombatLog;
 import me.iiSnipez.CombatLog.Events.PlayerTagEvent;
 
 public class PlayerTagListener implements Listener {
 
 	CombatLog plugin;
-	Faction faction;
 
 	public PlayerTagListener(CombatLog plugin) {
 		this.plugin = plugin;
@@ -58,19 +50,6 @@ public class PlayerTagListener implements Listener {
 		if (damager instanceof Player p) {
 			if (!p.hasPermission("combatlog.bypass")) {
 				if (!plugin.disableWorldNames.contains(p.getWorld().getName())) {
-					Location l = p.getLocation();
-					if (plugin.usesFactions) {
-						if (plugin.useNewFactions) {
-							faction = BoardColl.get().getFactionAt(PS.valueOf(l));
-							if (faction.getName().equalsIgnoreCase("SafeZone")) {
-								return;
-							}
-						}
-						if (plugin.useLegacyFactions
-								&& Board.getInstance().getFactionAt(new FLocation(l)).isSafeZone()) {
-							return;
-						}
-					}
 					if (!plugin.taggedPlayers.containsKey(p.getName())) {
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
 						if (plugin.taggerMessageEnabled) {
@@ -80,9 +59,6 @@ public class PlayerTagListener implements Listener {
 						if (plugin.useActionBar) {
 							plugin.aBar.sendActionBar(p, plugin.actionBarInCombatMessage
 									.replace("<time>", plugin.tagTimeRemaining(p.getName())));
-						}
-						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled) {
-							plugin.removeDisguise(p);
 						}
 						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
@@ -94,9 +70,6 @@ public class PlayerTagListener implements Listener {
 					} else {
 						plugin.taggedPlayers.remove(p.getName());
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
-						if (plugin.removeDisguiseEnabled) {
-							plugin.removeDisguise(p);
-						}
 						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
 						}
@@ -112,21 +85,8 @@ public class PlayerTagListener implements Listener {
 
 	private void tagDamagee(Entity damager, Entity damagee) {
 		if (damagee instanceof Player p) {
-			Location l = p.getLocation();
 			if (!p.hasPermission("combatlog.bypass")) {
 				if (!plugin.disableWorldNames.contains(p.getWorld().getName())) {
-					if (plugin.usesFactions) {
-						if (plugin.useNewFactions) {
-							faction = BoardColl.get().getFactionAt(PS.valueOf(l));
-							if (faction.getName().equalsIgnoreCase("SafeZone")) {
-								return;
-							}
-						}
-						if (plugin.useLegacyFactions
-								&& Board.getInstance().getFactionAt(new FLocation(l)).isSafeZone()) {
-							return;
-						}
-					}
 					if (!plugin.taggedPlayers.containsKey(p.getName())) {
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
 						if (plugin.taggedMessageEnabled) {
@@ -136,9 +96,6 @@ public class PlayerTagListener implements Listener {
 						if (plugin.useActionBar) {
 							plugin.aBar.sendActionBar(p, plugin.actionBarInCombatMessage
 									.replace("<time>", plugin.tagTimeRemaining(p.getName())));
-						}
-						if (plugin.usesLibsDisguise && plugin.removeDisguiseEnabled) {
-							plugin.removeDisguise(p);
 						}
 						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
@@ -150,9 +107,6 @@ public class PlayerTagListener implements Listener {
 					} else {
 						plugin.taggedPlayers.remove(p.getName());
 						plugin.taggedPlayers.put(p.getName(), plugin.getCurrentTime());
-						if (plugin.removeDisguiseEnabled) {
-							plugin.removeDisguise(p);
-						}
 						if (plugin.removeFlyEnabled) {
 							plugin.removeFly(p);
 						}

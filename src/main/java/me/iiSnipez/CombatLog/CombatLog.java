@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,7 +44,6 @@ import me.iiSnipez.CombatLog.Events.PlayerUntagEvent.UntagCause;
 import me.iiSnipez.CombatLog.Listeners.EntityDamageByEntityListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerCommandPreprocessListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerDeathListener;
-import me.iiSnipez.CombatLog.Listeners.PlayerDisguiseListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerInteractListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerJoinListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerKickListener;
@@ -55,8 +53,6 @@ import me.iiSnipez.CombatLog.Listeners.PlayerTagListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerTeleportListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerToggleFlightListener;
 import me.iiSnipez.CombatLog.Listeners.PlayerUntagListener;
-import me.iiSnipez.CombatLog.Listeners.PlayeriDisguiseListener;
-import me.libraryaddict.disguise.DisguiseAPI;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class CombatLog extends JavaPlugin {
@@ -67,10 +63,6 @@ public class CombatLog extends JavaPlugin {
 	public Variables vars;
 	public ActionBar aBar;
 	public WorldGuardPlugin wg;
-	public de.robingrether.idisguise.api.DisguiseAPI dAPI;
-	public boolean usesLibsDisguise = false;
-	public boolean usesiDisguise = false;
-	public boolean usesFactions = false;
 	public boolean usesWorldGuard = false;
 	public boolean usesPlaceholderAPI = false;
 	public Updater updater;
@@ -82,10 +74,8 @@ public class CombatLog extends JavaPlugin {
 	public boolean useActionBar = false;
 	public boolean useBossBar = false;
 	public boolean removeFlyEnabled = false;
-	public boolean removeDisguiseEnabled = false;
 	public boolean removeTagOnKick = false;
 	public boolean removeTagOnLagout = false;
-	public boolean removeTagInSafeZone = false;
 	public boolean removeTagInPvPDisabledArea = false;
 	public boolean removeInvisPotion = false;
 	public boolean blockCommandsEnabled = false;
@@ -126,8 +116,6 @@ public class CombatLog extends JavaPlugin {
 	public boolean killMessageEnabled = false;
 	public HashMap<String, Long> taggedPlayers = new HashMap<>();
 	public ArrayList<String> killPlayers = new ArrayList<>();
-	public boolean useNewFactions = false;
-	public boolean useLegacyFactions = false;
 	
 	public int combatlogs;
 
@@ -164,31 +152,6 @@ public class CombatLog extends JavaPlugin {
 	}
 
 	public void checkForPlugins() {
-		if (getServer().getPluginManager().getPlugin("LibsDisguises") == null) {
-			usesLibsDisguise = false;
-		} else {
-			getLogger().info("LibsDisguises plugin found! Disguise removal will work.");
-			usesLibsDisguise = true;
-		}
-		if (getServer().getPluginManager().getPlugin("iDisguise") == null) {
-			usesiDisguise = false;
-		} else {
-			usesiDisguise = true;
-			getLogger().info("iDisguise plugin found! Disguise removal will work.");
-		}
-		if (getServer().getPluginManager().getPlugin("Factions") == null) {
-			usesFactions = false;
-		} else {
-			usesFactions = true;
-			String version = getServer().getPluginManager().getPlugin("Factions").getPluginMeta().getVersion();
-			if (version.startsWith("2")) {
-				useNewFactions = true;
-				getLogger().info("New Factions plugin v" + version + " found! Safezone regions are now detected.");
-			} else if (version.startsWith("1")) {
-				useLegacyFactions = true;
-				getLogger().info("Legacy Factions plugin v" + version + " found! Safezone regions are now detected.");
-			}
-		}
 		if (getServer().getPluginManager().getPlugin("WorldGuard") == null) {
 			usesWorldGuard = false;
 		} else {
@@ -294,12 +257,6 @@ public class CombatLog extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerTeleportListener(this), this);
 		getServer().getPluginManager().registerEvents(new PlayerToggleFlightListener(this), this);
 		getServer().getPluginManager().registerEvents(new PlayerUntagListener(this), this);
-		if (usesLibsDisguise) {
-			getServer().getPluginManager().registerEvents(new PlayerDisguiseListener(this), this);
-		}
-		if (usesiDisguise) {
-			Bukkit.getServer().getPluginManager().registerEvents(new PlayeriDisguiseListener(this), this);
-		}
 	}
 
 	public void loadSettings() {
@@ -316,24 +273,6 @@ public class CombatLog extends JavaPlugin {
 		commandExec = new CommandExec(this);
 		vars = new Variables(this);
 		aBar = new ActionBar();
-		if (usesiDisguise) {
-			dAPI = vars.initDis();
-		}
-	}
-
-	public void removeDisguise(Player player) {
-		if (usesLibsDisguise && removeDisguiseEnabled && DisguiseAPI.isDisguised(player)) {
-			DisguiseAPI.undisguiseToAll(player);
-			if (removeModesMessageEnabled) {
-				player.sendMessage(translateText(removeModesMessage.replace("<mode>", "disguise")));
-			}
-		}
-		if (usesiDisguise && removeDisguiseEnabled && dAPI.isDisguised((OfflinePlayer) player)) {
-			dAPI.undisguise((OfflinePlayer) player);
-			if (removeModesMessageEnabled) {
-				player.sendMessage(translateText(removeModesMessage.replace("<mode>", "disguise")));
-			}
-		}
 	}
 
 	public void removeFly(Player player) {

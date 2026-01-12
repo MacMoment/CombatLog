@@ -20,10 +20,6 @@
 
 package me.iiSnipez.CombatLog;
 
-import org.bukkit.Bukkit;
-
-import de.robingrether.idisguise.api.DisguiseAPI;
-
 public class Variables {
 
 	CombatLog plugin;
@@ -42,12 +38,8 @@ public class Variables {
 		if (plugin.clConfig.getCLConfig().getStringList("Remove-Modes").contains("fly")) {
 			plugin.removeFlyEnabled = true;
 		}
-		if (plugin.clConfig.getCLConfig().getStringList("Remove-Modes").contains("disguise")) {
-			plugin.removeDisguiseEnabled = true;
-		}
 		plugin.removeTagOnKick = plugin.clConfig.getCLConfig().getBoolean("Remove-Tag.onKick");
 		plugin.removeTagOnLagout = plugin.clConfig.getCLConfig().getBoolean("Remove-Tag.onLagout");
-		plugin.removeTagInSafeZone = plugin.clConfig.getCLConfig().getBoolean("Remove-Tag.inSafeZone");
 		plugin.removeTagInPvPDisabledArea = plugin.clConfig.getCLConfig().getBoolean("Remove-Tag.inPvPDisabledArea");
 		plugin.removeInvisPotion = plugin.clConfig.getCLConfig().getBoolean("Remove-Invis-Potion");
 		plugin.useActionBar = plugin.clConfig.getCLConfig().getBoolean("ActionBar");
@@ -102,8 +94,4 @@ public class Variables {
 		plugin.killMessage = plugin.clConfig.getCLConfig().getString("KillMessage");
 		plugin.killMessageEnabled = !plugin.killMessage.equalsIgnoreCase("false");
 	}
-	
-	public DisguiseAPI initDis() {
-		return Bukkit.getServer().getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
-	}	
 }

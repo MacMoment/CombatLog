@@ -6,7 +6,7 @@ authors: [JackProehl]
 website: https://github.com/MacMoment/CombatLog
 main: me.iiSnipez.CombatLog.CombatLog
 api-version: "1.21"
-softdepend: [PlaceholderAPI, Factions, LibsDisguises, iDisguise, WorldGuard]
+softdepend: [PlaceholderAPI, WorldGuard]
 
 commands:
   combatlog:
