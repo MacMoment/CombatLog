@@ -53,9 +53,6 @@ tasks {
         )
         inputs.properties(props)
         filteringCharset = "UTF-8"
-        filesMatching("paper-plugin.yml") {
-            expand(props)
-        }
         filesMatching("plugin.yml") {
             expand(props)
         }
