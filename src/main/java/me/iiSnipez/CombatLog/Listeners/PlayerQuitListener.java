@@ -55,7 +55,7 @@ public class PlayerQuitListener implements Listener {
 				return;
 			}
 			if (plugin.broadcastEnabled) {
-				plugin.broadcastMsg(plugin.translateText(plugin.broadcastMessage.replace("<name>", player.getName())));
+				plugin.broadcastMsg(plugin.broadcastMessage.replace("<name>", player.getName()));
 			}			
 			if(plugin.executeCommandsEnabled){
 				for(String s : plugin.executeCommandList){
