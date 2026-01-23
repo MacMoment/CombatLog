@@ -308,9 +308,7 @@ public class CombatLog extends JavaPlugin {
 		getServer().broadcast(LegacyComponentSerializer.legacyAmpersand().deserialize(string));
 	}
 
-	public String translateText(String string) {
-		return LegacyComponentSerializer.legacyAmpersand().serialize(
-			LegacyComponentSerializer.legacyAmpersand().deserialize(string)
-		);
+	public net.kyori.adventure.text.Component translateText(String string) {
+		return LegacyComponentSerializer.legacyAmpersand().deserialize(string);
 	}
 }
